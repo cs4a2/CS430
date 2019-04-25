@@ -1,69 +1,38 @@
-#include <bits/stdc++.h>
-using namespace std;
+// A Dynamic Programming based solution for 0-1 Knapsack problem 
+#include<stdio.h> 
 
-void print(vector< vector<int> > MF);
-int knapsack(int wt[], int pr[], int n, int c);
+// A utility function that returns maximum of two integers 
+int max(int a, int b) { return (a > b)? a : b; } 
 
-int main()
-{
-	int total_items;
-	cout << "Enter the total number of items" << endl;
-	cin >> total_items;
+// Returns the maximum value that can be put in a knapsack of capacity W 
+int knapSack(int W, int wt[], int val[], int n) 
+{ 
+int i, w; 
+int K[n+1][W+1]; 
 
-	int capacity;
-	cout << "Enter the capacity" << endl;
-	cin >> capacity;
+// Build table K[][] in bottom up manner 
+for (i = 0; i <= n; i++) 
+{ 
+	for (w = 0; w <= W; w++) 
+	{ 
+		if (i==0 || w==0) 
+			K[i][w] = 0; 
+		else if (wt[i-1] <= w) 
+				K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]], K[i-1][w]); 
+		else
+				K[i][w] = K[i-1][w]; 
+	} 
+} 
 
-	int weights[total_items+1];
-	weights[0] = 0;
+return K[n][W]; 
+} 
 
-	cout << "Enter the weights of " << total_items << " items" << endl;
-	for(int i = 1; i <= total_items; i++)
-		cin >> weights[i];
-
-	int profits[total_items+1];
-	profits[0] = 0;
-
-	cout << "Enter the profits of " << total_items << " items" << endl;
-	for(int i = 1; i <= total_items; i++)
-		cin >> profits[i];
-
-	cout << "Maximum weight is " << knapsack(weights, profits, total_items, capacity) << endl;
-
-	return 0;
-}
-
-
-int knapsack(int wt[], int pr[], int n, int c)
-{
-	vector< vector<int> > MF(n+1, vector<int>(c+1, -1));
-	for(int i = 0; i <= n; i++)
-	{
-		for(int j = 0; j <= c; j++)
-		{
-			cnt++;
-			if(i == 0 || j == 0)
-				MF[i][j] = 0;
-			else if(wt[i] <= j)
-				MF[i][j] = max(MF[i-1][j], pr[i] + MF[i-1][j-wt[i]]);
-			else
-				MF[i][j] = MF[i-1][j];
-		}
-	}
-
-	//print(MF);
-
-	return MF[n][c];
-}
-
-void print(vector< vector<int> > MF)
-{
-	for(int i = 0; i < MF.size(); i++)
-	{
-		for(int j = 0; j < MF[i].size(); j++)
-			cout << setw(3) << MF[i][j] << " ";
-		cout << endl;
-	}
-
-	cout << endl;
-}
+int main() 
+{ 
+	int val[] = {60, 100, 120}; 
+	int wt[] = {10, 20, 30}; 
+	int W = 50; 
+	int n = sizeof(val)/sizeof(val[0]); 
+	printf("%d", knapSack(W, wt, val, n)); 
+	return 0; 
+} 
